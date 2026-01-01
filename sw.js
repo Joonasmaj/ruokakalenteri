@@ -1,5 +1,5 @@
-/* sw.js — simple + reliable update */
-const CACHE_VERSION = "mealcal-v3";
+/* sw.js — v4 */
+const CACHE_VERSION = "mealcal-v4";
 const CORE_ASSETS = [
   "./",
   "./index.html",
@@ -21,15 +21,13 @@ self.addEventListener("activate", (event) => {
   })());
 });
 
-// Network-first for navigation (index), cache-first for everything else
+// Network-first for navigations, cache-first for others
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle same-origin
   if (url.origin !== self.location.origin) return;
 
-  // Navigations: network first
   if (req.mode === "navigate") {
     event.respondWith((async () => {
       try {
@@ -45,7 +43,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Others: cache-first, then network
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_VERSION);
     const cached = await cache.match(req);
