@@ -99,9 +99,43 @@
     }
     .btn.danger:hover{border-color:rgba(220,38,38,.55); color:var(--dangerHover)}
 
+    .btn.icon{
+      padding:8px 10px;
+      border-radius:12px;
+      font-size:14px;
+      line-height:1;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .btn.starOn{
+      background:#fff7ed;
+      border-color:#fed7aa;
+      color:#9a3412;
+    }
+
+    .seg{
+      display:inline-flex;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+    }
+    .seg button{
+      border:none;background:transparent;cursor:pointer;
+      padding:9px 12px;font-size:13px;color:var(--muted);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .seg button.active{
+      background:var(--accentSoft);
+      color:#0f5132;
+      font-weight:650;
+    }
+
     .grid{
       display:grid;
-      grid-template-columns: 1.2fr .8fr;
+      grid-template-columns: 1.15fr .85fr;
       gap:12px;
       align-items:start;
     }
@@ -127,7 +161,7 @@
     .small{font-size:12px;color:var(--muted)}
     .muted{color:var(--muted)}
 
-    /* Calendar */
+    /* Calendar (month) */
     .dow{
       display:grid;
       grid-template-columns: repeat(7, 1fr);
@@ -142,6 +176,28 @@
       grid-template-columns: repeat(7, 1fr);
       gap:8px;
     }
+
+    /* Week / 2 weeks layout */
+    .weekGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+    }
+    @media (max-width: 980px){
+      .weekGrid{grid-template-columns: 1fr;}
+    }
+    .twoWeekGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap:8px;
+    }
+    @media (max-width: 980px){
+      .twoWeekGrid{grid-template-columns: repeat(2, 1fr);}
+    }
+    @media (max-width: 420px){
+      .twoWeekGrid{grid-template-columns: 1fr;}
+    }
+
     .day{
       min-height:92px;
       border:1px solid var(--line);
@@ -167,6 +223,7 @@
       line-height:1.25;
       word-break:break-word;
       color:#111827;
+      white-space:pre-wrap;
     }
     .day .tag{
       position:absolute;top:8px;right:8px;
@@ -175,6 +232,13 @@
       background:var(--accentSoft);
       border:1px solid #cfeedd;
       padding:4px 8px;border-radius:999px;
+    }
+    .day .serv{
+      position:absolute;bottom:8px;right:8px;
+      font-size:11px;color:var(--muted);
+      border:1px solid var(--line);
+      background:#fafafa;
+      padding:3px 7px;border-radius:999px;
     }
     .day.today{
       border-color:rgba(22,163,74,.55);
@@ -212,6 +276,8 @@
       background:#fafafa;
       color:#374151;
     }
+    .chip.cat{background:#f8fafc}
+    .chip.fav{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
 
     /* Inputs */
     .input, select, textarea{
@@ -241,7 +307,7 @@
       overflow:auto;
       padding-right:4px;
       border-radius:14px;
-      max-height: calc(100vh - 320px);
+      max-height: calc(100vh - 360px);
     }
     @media (max-width: 980px){
       .mealListWrap{ max-height: 420px; }
@@ -252,6 +318,19 @@
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+    }
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .filters .input{max-width:360px}
+    .filters select{max-width:220px}
+    .filters .seg{margin-left:auto}
+    @media (max-width:980px){
+      .filters .seg{margin-left:0}
     }
 
     /* Modals */
@@ -265,7 +344,7 @@
       z-index:50;
     }
     .modal{
-      width:min(640px, 100%);
+      width:min(720px, 100%);
       background:#fff;
       border:1px solid var(--line);
       border-radius:18px;
@@ -291,16 +370,37 @@
     }
     .x:hover{background:#f3f4f6; color:#111827}
     .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .checkRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .checkRow label{display:flex;gap:8px;align-items:center;color:var(--text);font-size:13px}
+    .checkRow input{accent-color: var(--accent);}
 
     /* Shopping list */
     .shopList{
       display:flex;
       flex-direction:column;
-      gap:8px;
-      max-height:360px;
+      gap:10px;
+      max-height:420px;
       overflow:auto;
       padding-right:4px;
     }
+    .groupBox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .groupHead{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      background:#fafafa;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .groupHead .gtitle{font-weight:700}
+    .groupHead .gmeta{font-size:12px;color:var(--muted)}
+    .groupBody{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
     .shopRow{
       display:flex;
       align-items:center;
@@ -397,24 +497,30 @@
       <section class="card">
         <div class="card-h">
           <div class="row">
-            <button class="btn" id="prevMonth">◀</button>
+            <button class="btn" id="prevNav">◀</button>
             <div>
               <div class="monthTitle" id="monthTitle">—</div>
               <div class="small" id="monthMeta">—</div>
             </div>
-            <button class="btn" id="nextMonth">▶</button>
+            <button class="btn" id="nextNav">▶</button>
           </div>
+
           <div class="row">
+            <div class="seg" id="viewSeg">
+              <button id="modeMonth" class="active" type="button">Kuukausi</button>
+              <button id="modeWeek" type="button">Viikko</button>
+              <button id="modeTwoWeeks" type="button">2 viikkoa</button>
+            </div>
             <button class="btn primary" id="btnQuick2w">Täytä 2 viikkoa</button>
             <button class="btn danger" id="btnClearMonth">Tyhjennä tämä kuukausi</button>
           </div>
         </div>
 
         <div class="card-b">
-          <div class="dow">
+          <div class="dow" id="dowRow">
             <div>Ma</div><div>Ti</div><div>Ke</div><div>To</div><div>Pe</div><div>La</div><div>Su</div>
           </div>
-          <div class="calendar" id="calendar"></div>
+          <div id="calendar"></div>
         </div>
       </section>
 
@@ -423,16 +529,27 @@
         <div class="card-h">
           <div style="min-width:240px">
             <div class="monthTitle">Ruoat / reseptit</div>
-            <div class="small">Valmiit ruuat sisältävät K-Ruoka-hakulinkin + ainesosat ostoslistaan.</div>
-          </div>
-          <div class="row" style="flex:1;justify-content:flex-end">
-            <input class="input" id="mealSearch" placeholder="Hae ruokia (esim. lohi, kana, pasta)..." style="max-width:360px">
-            <button class="btn primary" id="btnAddMeal">+ Lisää ruoka</button>
+            <div class="small">Suodata kategorioilla ja suosikeilla. (Linkit ovat K-Ruoka-hakuja.)</div>
           </div>
         </div>
 
         <div class="card-b">
           <div class="sidebarBody">
+            <div class="filters">
+              <input class="input" id="mealSearch" placeholder="Hae ruokia (esim. lohi, kana, pasta)..." />
+              <select id="catFilter">
+                <option value="">Kaikki kategoriat</option>
+              </select>
+              <button class="btn icon" id="btnFavOnly" title="Vain suosikit">⭐ Suosikit</button>
+
+              <div class="seg" title="Lajittelu">
+                <button id="sortFav" class="active" type="button">Suosikit ensin</button>
+                <button id="sortAZ" type="button">A–Ö</button>
+              </div>
+
+              <button class="btn primary" id="btnAddMeal">+ Lisää ruoka</button>
+            </div>
+
             <div class="mealListWrap" id="mealListWrap">
               <div class="list" id="mealList"></div>
             </div>
@@ -447,7 +564,7 @@
 
             <div class="hr"></div>
             <div class="small muted">
-              Huom: Sovellus tekee ostoslistan tähän. K-Ruoka-kaupan “oikeaan ostoskoriin” siirto vaatisi heidän oman kirjautumisen/rajapinnan.
+              Huom: “Oikeaan K-Ruoka ostoskoriin” siirto vaatisi heidän oman kirjautumisen/rajapinnan.
             </div>
           </div>
         </div>
@@ -466,8 +583,21 @@
         <button class="x" id="dayModalClose" aria-label="Sulje">×</button>
       </div>
       <div class="mb">
-        <label for="mealSelect">Valitse ruoka listasta</label>
-        <select id="mealSelect"></select>
+        <div class="two">
+          <div>
+            <label for="mealSelect">Valitse ruoka listasta</label>
+            <select id="mealSelect"></select>
+          </div>
+          <div>
+            <label for="servings">Annoksia</label>
+            <select id="servings">
+              <option value="1">x1</option>
+              <option value="2">x2</option>
+              <option value="4">x4</option>
+            </select>
+            <div class="hint">Vaikuttaa ostoslistan määriin (x1/x2/x4).</div>
+          </div>
+        </div>
 
         <div class="two" style="margin-top:10px">
           <div>
@@ -484,7 +614,7 @@
           <div class="hint">Oma ruoka (täytä vain jos valitsit “Oma ruoka”)</div>
           <textarea id="mealText" placeholder="Kirjoita oma ruoka tähän..."></textarea>
 
-          <label for="customIngredients" style="margin-top:10px;display:block;">Ainesosat ostoslistaan (pilkuilla erotettuna)</label>
+          <label for="customIngredients" style="margin-top:10px;display:block;">Ainesosat ostoslistaan (pilkuilla)</label>
           <textarea id="customIngredients" placeholder="Esim. broileri, riisi, paprika, sipuli, kerma"></textarea>
         </div>
 
@@ -517,6 +647,7 @@
           <div>
             <label for="mealUrl">Linkki (valinnainen)</label>
             <input class="input" id="mealUrl" placeholder="https://www.k-ruoka.fi/..." />
+            <div class="hint">Jos jätät tyhjäksi, linkiksi tulee K-Ruoka-haku ruoan nimellä.</div>
           </div>
         </div>
 
@@ -525,6 +656,14 @@
 
         <label for="mealNotes" style="margin-top:10px;display:block">Muistiinpanot (valinnainen)</label>
         <textarea id="mealNotes" placeholder="Esim. Tee tupla-annos → lounas huomiseksi"></textarea>
+
+        <div class="hr"></div>
+
+        <div class="checkRow">
+          <label><input type="checkbox" id="mealFav" /> ⭐ Suosikki</label>
+        </div>
+        <div class="hint" style="margin-top:6px">Kategoriat:</div>
+        <div class="checkRow" id="catChecks" style="margin-top:6px"></div>
 
         <div class="row" style="margin-top:12px;justify-content:space-between">
           <button class="btn danger" id="btnDeleteMeal" style="display:none;">Poista ruoka</button>
@@ -543,7 +682,7 @@
       <div class="mh">
         <div>
           <div class="monthTitle">🛒 Ostoslista</div>
-          <div class="small">Kokoaa ainesosat kalenterista valitulta ajalta.</div>
+          <div class="small">Kokoaa ainesosat kalenterista valitulta ajalta. Annoskertoimet huomioidaan.</div>
         </div>
         <button class="x" id="shopModalClose" aria-label="Sulje">×</button>
       </div>
@@ -594,10 +733,8 @@
       var buf = new Uint8Array(16);
       if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(buf);
       else for (var i=0;i<16;i++) buf[i] = Math.floor(Math.random()*256);
-
       buf[6] = (buf[6] & 0x0f) | 0x40;
       buf[8] = (buf[8] & 0x3f) | 0x80;
-
       var hex = Array.prototype.map.call(buf, function(b){ return b.toString(16).padStart(2,"0"); }).join("");
       return hex.slice(0,8)+"-"+hex.slice(8,12)+"-"+hex.slice(12,16)+"-"+hex.slice(16,20)+"-"+hex.slice(20);
     }catch(e){
@@ -616,6 +753,14 @@
     return a.getFullYear()==b.getFullYear() && a.getMonth()==b.getMonth() && a.getDate()==b.getDate();
   }
   function addDays(d,n){ var x=new Date(d); x.setDate(x.getDate()+n); return x; }
+  function startOfWeekMon(d){
+    var x = new Date(d);
+    var dow = x.getDay(); // 0..6 (Sun..Sat)
+    var toMon = (dow === 0) ? -6 : (1 - dow);
+    x.setDate(x.getDate()+toMon);
+    x.setHours(0,0,0,0);
+    return x;
+  }
   function kSearchUrl(q){ return "https://www.k-ruoka.fi/haku?q="+encodeURIComponent(q); }
 
   function escapeHtml(s){
@@ -643,10 +788,8 @@
     toastMsg.textContent = message || "";
 
     toastClose.onclick = function(){ hideToast(); };
-
     toastTimer = setTimeout(function(){ hideToast(); }, 3200);
   }
-
   function hideToast(){
     if(!toastEl || !toastWrap) return;
     toastEl.classList.remove("show");
@@ -665,60 +808,131 @@
   });
 
   // ====== Storage keys ======
-  var LS_MEALS = "mealcal.meals.v3";
-  var LS_PLAN  = "mealcal.plan.v3";
-  var LS_CHECK = "mealcal.shop.checked.v1";
+  var LS_MEALS = "mealcal.meals.v4";
+  var LS_PLAN  = "mealcal.plan.v4";
+  var LS_CHECK = "mealcal.shop.checked.v2";
 
-  // ====== Default meals (many) ======
-  var defaultMeals = [
-    { id: uuid(), name:"Uunilohi ja juurekset", url:kSearchUrl("Uunilohi ja juurekset"), notes:"Pellille kaikki kerralla. Tee tupla-annos.", ingredients:["lohi","peruna","porkkana","sipuli","sitruuna","tilli","oliiviöljy","suola","pippuri"] },
-    { id: uuid(), name:"Lohikeitto", url:kSearchUrl("Lohikeitto"), notes:"Hyvä pakkasruoka.", ingredients:["lohi","peruna","porkkana","sipuli","ruohosipuli/tilli","kalaliemi","kerma","suola","pippuri"] },
-    { id: uuid(), name:"Broileri-kasviswokki", url:kSearchUrl("Broileri kasviswokki"), notes:"Pakastevihanneksilla nopea.", ingredients:["broileri","wok-vihannekset","soijakastike","valkosipuli","inkivääri","riisi/nuudelit","öljy"] },
-    { id: uuid(), name:"Kasvislasagne", url:kSearchUrl("Kasvislasagne"), notes:"Iso vuoka → useampi päivä.", ingredients:["lasagnelevyt","tomaattimurska","sipuli","valkosipuli","porkkana","kesäkurpitsa","paprika","juusto","maito/kasvimaito","jauho","öljy","suola","pippuri"] },
-    { id: uuid(), name:"Linssikeitto", url:kSearchUrl("Linssikeitto"), notes:"Edullinen ja terveellinen.", ingredients:["punaiset linssit","sipuli","valkosipuli","porkkana","tomaattimurska","kasvisliemi","mausteet","öljy"] },
-    { id: uuid(), name:"Tonnikalasalaatti", url:kSearchUrl("Tonnikalasalaatti"), notes:"Nopea lounas.", ingredients:["tonnikala","salaatti","kurkku","tomaatti","paprika","punasipuli","kastike"] },
-    { id: uuid(), name:"Kikherne–couscoussalaatti", url:kSearchUrl("Kikherne couscoussalaatti"), notes:"Sopii myös evääksi.", ingredients:["kikherneet","couscous","kurkku","tomaatti","punasipuli","sitruuna","oliiviöljy","persilja","suola","pippuri"] },
-    { id: uuid(), name:"Uunifetapasta", url:kSearchUrl("Uunifetapasta"), notes:"Helppo uuniruoka.", ingredients:["feta","kirsikkatomaatti","pasta","valkosipuli","oliiviöljy","basilika","pippuri"] },
-    { id: uuid(), name:"Makaronilaatikko", url:kSearchUrl("Makaronilaatikko"), notes:"Iso satsi → useampi annos.", ingredients:["makaroni","jauheliha","sipuli","maito","kananmuna","suola","pippuri"] },
-    { id: uuid(), name:"Chili con carne", url:kSearchUrl("Chili con carne"), notes:"Tee tupla ja pakasta.", ingredients:["jauheliha","kidneypavut","tomaattimurska","sipuli","valkosipuli","chili/mausteet","riisi"] },
-    { id: uuid(), name:"Chili sin carne", url:kSearchUrl("Chili sin carne"), notes:"Kasvisversio.", ingredients:["kidneypavut","kikherneet","tomaattimurska","sipuli","valkosipuli","mausteet","riisi"] },
-    { id: uuid(), name:"Butter chicken", url:kSearchUrl("Butter chicken"), notes:"Sopii riisin kanssa.", ingredients:["broileri","tomaattimurska","kerma","sipuli","valkosipuli","inkivääri","curry/garam masala","riisi"] },
-    { id: uuid(), name:"Pestokanapasta", url:kSearchUrl("Pestokanapasta"), notes:"Nopea.", ingredients:["broileri","pasta","pesto","kerma (val.)","tomaatti","salaatti"] },
-    { id: uuid(), name:"Kermainen lohipasta", url:kSearchUrl("Lohipasta kermainen"), notes:"Klassikko.", ingredients:["lohi","pasta","kerma","sipuli","tilli","sitruuna","suola","pippuri"] },
-    { id: uuid(), name:"Kalapuikot ja muusi", url:kSearchUrl("Kalapuikot perunamuusi"), notes:"Helppo.", ingredients:["kalapuikot","peruna","maito","voi","sitruuna (val.)","pippuri"] },
-    { id: uuid(), name:"Hernekeitto", url:kSearchUrl("Hernekeitto"), notes:"Torstari.", ingredients:["herneet (kuivattu/valmis)","sipuli","lihaliemi/kasvisliemi","sinappi","leipä"] },
-    { id: uuid(), name:"Kasvissosekeitto", url:kSearchUrl("Kasvissosekeitto"), notes:"Lisää päälle siemeniä.", ingredients:["peruna","porkkana","bataatti (val.)","sipuli","kasvisliemi","kerma (val.)","mausteet"] },
-    { id: uuid(), name:"Bataatti–kikhernecurry", url:kSearchUrl("Bataatti kikherne curry"), notes:"Tosi helppo.", ingredients:["bataatti","kikherneet","kookosmaito","curry","sipuli","valkosipuli","riisi"] },
-    { id: uuid(), name:"Tortillat (kana)", url:kSearchUrl("Kana tortillat"), notes:"Helppo perjantai.", ingredients:["tortillalätyt","broileri","salaatti","tomaatti","kurkku","juusto","salsa","kermaviili"] },
-    { id: uuid(), name:"Tortillat (kasvis)", url:kSearchUrl("Kasvis tortillat"), notes:"Kasvisversio.", ingredients:["tortillalätyt","pavut/nyhtökaura/härkis","salaatti","tomaatti","juusto","salsa","kermaviili"] },
-    { id: uuid(), name:"Shakshuka", url:kSearchUrl("Shakshuka"), notes:"Munat tomaattikastikkeessa.", ingredients:["kananmuna","tomaattimurska","paprika","sipuli","valkosipuli","mausteet","leipä"] },
-    { id: uuid(), name:"Uunikasvikset + halloumi", url:kSearchUrl("Uunikasvikset halloumi"), notes:"Uuniin kaikki.", ingredients:["halloumi","peruna/bataatti","porkkana","paprika","sipuli","öljy","mausteet"] },
-    { id: uuid(), name:"Sienirisotto", url:kSearchUrl("Sienirisotto"), notes:"Kermaisen hyvää.", ingredients:["risottoriisi","sienet","sipuli","valkosipuli","liemi","parmesaani (val.)","voi/öljy"] },
-    { id: uuid(), name:"Paistettu riisi (kana)", url:kSearchUrl("Paistettu riisi kana"), notes:"Jämäriisille täydellinen.", ingredients:["riisi","broileri","kananmuna","pakastevihannekset","soijakastike","öljy"] },
-    { id: uuid(), name:"Tofu-kasviswokki", url:kSearchUrl("Tofu kasviswokki"), notes:"Kasvisproteiinia.", ingredients:["tofu","wok-vihannekset","soijakastike","valkosipuli","inkivääri","riisi/nuudelit","öljy"] },
-    { id: uuid(), name:"Caesar-salaatti (kana)", url:kSearchUrl("Caesar salaatti kana"), notes:"Klassikko.", ingredients:["broileri","roomansalaatti","parmesaani","krutongit","caesar-kastike"] },
-    { id: uuid(), name:"Poke bowl (lohi)", url:kSearchUrl("Poke bowl lohi"), notes:"Riisi + kala + kasvikset.", ingredients:["lohi","riisi","kurkku","avokado (val.)","edamame (val.)","soijakastike","seesaminsiemenet"] },
-    { id: uuid(), name:"Nakkikeitto", url:kSearchUrl("Nakkikeitto"), notes:"Nopea keitto.", ingredients:["nakit","peruna","porkkana","sipuli","liemi","mausteet"] },
-    { id: uuid(), name:"Broilerikiusaus", url:kSearchUrl("Broilerikiusaus"), notes:"Uunissa helppo.", ingredients:["broileri","peruna-sipulisekoitus","kerma","juusto (val.)","mausteet"] }
+  // ====== Categories ======
+  var CAT = [
+    {key:"kana", label:"Kana"},
+    {key:"kala", label:"Kala"},
+    {key:"kasvis", label:"Kasvis"},
+    {key:"pasta", label:"Pasta"},
+    {key:"keitto", label:"Keitto"},
+    {key:"uuni", label:"Uuni"},
+    {key:"wok", label:"Wok"},
+    {key:"salaatti", label:"Salaatti"},
+    {key:"nopea", label:"Nopea"},
+    {key:"edullinen", label:"Edullinen"},
+    {key:"pakastettava", label:"Pakastettava"}
   ];
+  function catLabel(key){
+    for(var i=0;i<CAT.length;i++) if(CAT[i].key===key) return CAT[i].label;
+    return key;
+  }
+
+  // ====== Default meals (reilusti valintoja, K-Ruoka-haku linkkinä) ======
+  function M(name, cats, ingredients, notes){
+    return {
+      id: uuid(),
+      name: name,
+      url: kSearchUrl(name),
+      notes: notes || "",
+      ingredients: ingredients || [],
+      categories: cats || [],
+      favorite: false
+    };
+  }
+
+  var defaultMeals = [
+    M("Uunilohi ja juurekset", ["kala","uuni","nopea"], ["lohi","peruna","porkkana","sipuli","sitruuna","tilli","oliiviöljy","suola","pippuri"], "Pellille kaikki kerralla. Tee tupla-annos."),
+    M("Lohikeitto", ["kala","keitto"], ["lohi","peruna","porkkana","sipuli","kalaliemi","kerma","tilli","suola","pippuri"], "Hyvä pakkasruoka."),
+    M("Broileri-kasviswokki", ["kana","wok","nopea"], ["broileri","wok-vihannekset","soijakastike","valkosipuli","inkivääri","riisi/nuudelit","öljy"], "Pakastevihanneksilla nopea."),
+    M("Kasvislasagne", ["kasvis","pasta","pakastettava"], ["lasagnelevyt","tomaattimurska","sipuli","valkosipuli","porkkana","kesäkurpitsa","paprika","juusto","maito/kasvimaito","jauho","öljy","suola","pippuri"], "Iso vuoka → useampi päivä."),
+    M("Linssikeitto", ["kasvis","keitto","edullinen"], ["punaiset linssit","sipuli","valkosipuli","porkkana","tomaattimurska","kasvisliemi","mausteet","öljy"], "Edullinen ja terveellinen."),
+    M("Tonnikalasalaatti", ["kala","salaatti","nopea"], ["tonnikala","salaatti","kurkku","tomaatti","paprika","punasipuli","kastike"], "Nopea lounas."),
+    M("Kikherne–couscoussalaatti", ["kasvis","salaatti","edullinen"], ["kikherneet","couscous","kurkku","tomaatti","punasipuli","sitruuna","oliiviöljy","persilja","suola","pippuri"], "Sopii myös evääksi."),
+    M("Uunifetapasta", ["kasvis","pasta","uuni","nopea"], ["feta","kirsikkatomaatti","pasta","valkosipuli","oliiviöljy","basilika","pippuri"], "Helppo uuniruoka."),
+    M("Makaronilaatikko", ["pakastettava","edullinen"], ["makaroni","jauheliha","sipuli","maito","kananmuna","suola","pippuri"], "Iso satsi → useampi annos."),
+    M("Chili con carne", ["pakastettava"], ["jauheliha","kidneypavut","tomaattimurska","sipuli","valkosipuli","chili/mausteet","riisi"], "Tee tupla ja pakasta."),
+    M("Chili sin carne", ["kasvis","pakastettava","edullinen"], ["kidneypavut","kikherneet","tomaattimurska","sipuli","valkosipuli","mausteet","riisi"], "Kasvisversio."),
+    M("Butter chicken", ["kana"], ["broileri","tomaattimurska","kerma","sipuli","valkosipuli","inkivääri","curry/garam masala","riisi"], "Sopii riisin kanssa."),
+    M("Pestokanapasta", ["kana","pasta","nopea"], ["broileri","pasta","pesto","kerma (val.)","tomaatti","salaatti"], "Nopea."),
+    M("Kermainen lohipasta", ["kala","pasta"], ["lohi","pasta","kerma","sipuli","tilli","sitruuna","suola","pippuri"], "Klassikko."),
+    M("Kalapuikot ja muusi", ["kala","nopea"], ["kalapuikot","peruna","maito","voi","sitruuna (val.)","pippuri"], "Helppo."),
+    M("Hernekeitto", ["keitto","edullinen"], ["herneet (kuivattu/valmis)","sipuli","lihaliemi/kasvisliemi","sinappi","leipä"], "Torstari."),
+    M("Kasvissosekeitto", ["kasvis","keitto","edullinen"], ["peruna","porkkana","bataatti (val.)","sipuli","kasvisliemi","kerma (val.)","mausteet"], "Lisää päälle siemeniä."),
+    M("Bataatti–kikhernecurry", ["kasvis","edullinen"], ["bataatti","kikherneet","kookosmaito","curry","sipuli","valkosipuli","riisi"], "Tosi helppo."),
+    M("Tortillat (kana)", ["kana","nopea"], ["tortillalätyt","broileri","salaatti","tomaatti","kurkku","juusto","salsa","kermaviili"], "Helppo perjantai."),
+    M("Tortillat (kasvis)", ["kasvis","nopea"], ["tortillalätyt","pavut/nyhtökaura/härkis","salaatti","tomaatti","juusto","salsa","kermaviili"], "Kasvisversio."),
+    M("Shakshuka", ["kasvis","nopea"], ["kananmuna","tomaattimurska","paprika","sipuli","valkosipuli","mausteet","leipä"], "Munat tomaattikastikkeessa."),
+    M("Uunikasvikset + halloumi", ["kasvis","uuni","nopea"], ["halloumi","peruna/bataatti","porkkana","paprika","sipuli","öljy","mausteet"], "Uuniin kaikki."),
+    M("Sienirisotto", ["kasvis"], ["risottoriisi","sienet","sipuli","valkosipuli","liemi","parmesaani (val.)","voi/öljy"], "Kermaisen hyvää."),
+    M("Paistettu riisi (kana)", ["kana","nopea"], ["riisi","broileri","kananmuna","pakastevihannekset","soijakastike","öljy"], "Jämäriisille täydellinen."),
+    M("Tofu-kasviswokki", ["kasvis","wok","nopea"], ["tofu","wok-vihannekset","soijakastike","valkosipuli","inkivääri","riisi/nuudelit","öljy"], "Kasvisproteiinia."),
+    M("Caesar-salaatti (kana)", ["kana","salaatti","nopea"], ["broileri","roomansalaatti","parmesaani","krutongit","caesar-kastike"], "Klassikko."),
+    M("Poke bowl (lohi)", ["kala","nopea"], ["lohi","riisi","kurkku","avokado (val.)","edamame (val.)","soijakastike","seesaminsiemenet"], "Riisi + kala + kasvikset."),
+    M("Nakkikeitto", ["keitto","nopea"], ["nakit","peruna","porkkana","sipuli","liemi","mausteet"], "Nopea keitto."),
+    M("Broilerikiusaus", ["kana","uuni","pakastettava"], ["broileri","peruna-sipulisekoitus","kerma","juusto (val.)","mausteet"], "Uunissa helppo."),
+    M("Jauhelihakastike ja perunat", ["edullinen"], ["jauheliha","sipuli","kerma/ruokakerma","peruna","mausteet"], "Perus kotiruoka."),
+    M("Kanakeitto", ["kana","keitto"], ["broileri","peruna","porkkana","sipuli","liemi","mausteet"], "Kevyt ja helppo."),
+    M("Kasvispyörykät + perunat", ["kasvis","edullinen"], ["kasvispyörykät","peruna","kastike","salaatti"], "Nopea arki."),
+    M("Uunibroileri ja kasvikset", ["kana","uuni","nopea"], ["broileri","peruna","porkkana","paprika","sipuli","öljy","mausteet"], "Pellillä kaikki."),
+    M("Kermainen kanakastike", ["kana","nopea"], ["broileri","sipuli","kerma","riisi/pasta","mausteet"], "Tosi helppo."),
+    M("Tomaattinen pastakastike", ["kasvis","pasta","edullinen"], ["pasta","tomaattimurska","sipuli","valkosipuli","basilika/oregano","öljy"], "Edullinen perus."),
+    M("Uunilohi ja riisi", ["kala","uuni","nopea"], ["lohi","riisi","sitruuna","tilli","öljy","suola","pippuri"], "Helppo."),
+    M("Kaalilaatikko", ["pakastettava","edullinen"], ["kaali","jauheliha (val.)","riisi","siirappi (val.)","sipuli","mausteet"], "Iso satsi."),
+    M("Kasvispihvit + salaatti", ["kasvis","nopea"], ["kasvispihvit","salaatti","kurkku","tomaatti","kastike"], "Nopea.")
+  ];
+
+  function normalizeMeal(m){
+    if(!m) return m;
+    if(!m.id) m.id = uuid();
+    if(!m.url) m.url = kSearchUrl(m.name || "ruoka");
+    if(!m.notes) m.notes = "";
+    if(!Array.isArray(m.ingredients)) m.ingredients = [];
+    if(!Array.isArray(m.categories)) m.categories = [];
+    if(typeof m.favorite !== "boolean") m.favorite = false;
+    return m;
+  }
 
   function loadMeals(){
     try{
       var raw = localStorage.getItem(LS_MEALS);
-      if(!raw) return defaultMeals;
+      if(!raw){
+        return defaultMeals.map(normalizeMeal);
+      }
       var arr = JSON.parse(raw);
-      if(!Array.isArray(arr) || arr.length < 10) return defaultMeals;
+      if(!Array.isArray(arr) || arr.length < 5){
+        return defaultMeals.map(normalizeMeal);
+      }
+      for(var i=0;i<arr.length;i++) arr[i] = normalizeMeal(arr[i]);
       return arr;
-    }catch(e){ return defaultMeals; }
+    }catch(e){
+      return defaultMeals.map(normalizeMeal);
+    }
   }
   function saveMeals(meals){ localStorage.setItem(LS_MEALS, JSON.stringify(meals)); }
+
+  function normalizePlanItem(item){
+    if(!item) return item;
+    if(!item.servings) item.servings = 1;
+    if(typeof item.servings !== "number") item.servings = Number(item.servings)||1;
+    if(item.servings !== 1 && item.servings !== 2 && item.servings !== 4) item.servings = 1;
+    if(!item.badge) item.badge = "";
+    if(!item.link) item.link = "";
+    return item;
+  }
 
   function loadPlan(){
     try{
       var raw = localStorage.getItem(LS_PLAN);
       if(!raw) return {};
       var obj = JSON.parse(raw);
-      return (obj && typeof obj === "object") ? obj : {};
+      if(!obj || typeof obj !== "object") return {};
+      // migrate defaults
+      Object.keys(obj).forEach(function(k){ obj[k] = normalizePlanItem(obj[k]); });
+      return obj;
     }catch(e){ return {}; }
   }
   function savePlan(plan){ localStorage.setItem(LS_PLAN, JSON.stringify(plan)); }
@@ -732,8 +946,16 @@
   var meals = loadMeals();
   var plan = loadPlan();
   var checks = loadChecks();
-  var viewDate = new Date(); viewDate.setDate(1);
+
+  // view state
+  var viewMode = "month"; // month | week | twoWeeks
+  var focusDate = new Date(); // used for week/twoWeeks navigation
+  var viewDate = new Date(); viewDate.setDate(1); // month navigation
+
   var mealQuery = "";
+  var favOnly = false;
+  var catOnly = "";
+  var sortMode = "fav"; // fav | az
 
   var PAGE_SIZE = 10;
   var mealLimit = PAGE_SIZE;
@@ -744,16 +966,30 @@
     return m;
   }
 
+  // ====== DOM ======
   var elCalendar = document.getElementById("calendar");
   var elMonthTitle = document.getElementById("monthTitle");
   var elMonthMeta = document.getElementById("monthMeta");
+  var elDowRow = document.getElementById("dowRow");
+
   var elMealList = document.getElementById("mealList");
   var elMealSearch = document.getElementById("mealSearch");
-
   var elMealListWrap = document.getElementById("mealListWrap");
   var btnMealsMore = document.getElementById("btnMealsMore");
   var btnMealsLess = document.getElementById("btnMealsLess");
   var mealPagerInfo = document.getElementById("mealPagerInfo");
+
+  var catFilter = document.getElementById("catFilter");
+  var btnFavOnly = document.getElementById("btnFavOnly");
+  var sortFav = document.getElementById("sortFav");
+  var sortAZ = document.getElementById("sortAZ");
+
+  // nav + modes
+  var prevNav = document.getElementById("prevNav");
+  var nextNav = document.getElementById("nextNav");
+  var modeMonth = document.getElementById("modeMonth");
+  var modeWeek = document.getElementById("modeWeek");
+  var modeTwoWeeks = document.getElementById("modeTwoWeeks");
 
   // day modal
   var dayModalBack = document.getElementById("dayModalBack");
@@ -761,6 +997,7 @@
   var dayModalTitle = document.getElementById("dayModalTitle");
   var dayModalSubtitle = document.getElementById("dayModalSubtitle");
   var mealSelect = document.getElementById("mealSelect");
+  var servings = document.getElementById("servings");
   var badge = document.getElementById("badge");
   var recipeLink = document.getElementById("recipeLink");
   var customBlock = document.getElementById("customBlock");
@@ -779,6 +1016,8 @@
   var mealUrl = document.getElementById("mealUrl");
   var mealIngs = document.getElementById("mealIngs");
   var mealNotes = document.getElementById("mealNotes");
+  var mealFav = document.getElementById("mealFav");
+  var catChecks = document.getElementById("catChecks");
   var btnSaveMeal = document.getElementById("btnSaveMeal");
   var btnCancelMeal = document.getElementById("btnCancelMeal");
   var btnDeleteMeal = document.getElementById("btnDeleteMeal");
@@ -796,24 +1035,75 @@
   var shopMeta = document.getElementById("shopMeta");
   var shopLinks = document.getElementById("shopLinks");
 
-  // ====== Buttons ======
-  document.getElementById("prevMonth").addEventListener("click", function(){ viewDate.setMonth(viewDate.getMonth()-1); renderAll(); });
-  document.getElementById("nextMonth").addEventListener("click", function(){ viewDate.setMonth(viewDate.getMonth()+1); renderAll(); });
-  document.getElementById("btnToday").addEventListener("click", function(){ viewDate = new Date(); viewDate.setDate(1); renderAll(); });
-  document.getElementById("btnAddMeal").addEventListener("click", function(){ openMealModal(null); });
-
-  // 2-tap confirmations for mobile
+  // ====== 2-tap confirmations for mobile ======
   var armed = {}; // key -> timestamp
-
   function arm(key, message){
     armed[key] = Date.now() + 4500;
     toast(message || "Paina uudestaan vahvistaaksesi", "warn");
   }
-  function isArmed(key){
-    return armed[key] && Date.now() <= armed[key];
-  }
+  function isArmed(key){ return armed[key] && Date.now() <= armed[key]; }
   function disarm(key){ delete armed[key]; }
 
+  // ====== Header buttons ======
+  document.getElementById("btnToday").addEventListener("click", function(){
+    focusDate = new Date();
+    viewDate = new Date(); viewDate.setDate(1);
+    renderAll();
+  });
+
+  document.getElementById("btnAddMeal").addEventListener("click", function(){ openMealModal(null); });
+
+  document.getElementById("btnExport").addEventListener("click", exportJSON);
+  document.getElementById("btnImport").addEventListener("click", importJSON);
+
+  document.getElementById("btnOpenShop").addEventListener("click", function(){
+    openShopModal();
+    buildShop();
+  });
+
+  // ====== View modes ======
+  function setMode(m){
+    viewMode = m;
+    modeMonth.classList.remove("active");
+    modeWeek.classList.remove("active");
+    modeTwoWeeks.classList.remove("active");
+    if(m==="month") modeMonth.classList.add("active");
+    if(m==="week") modeWeek.classList.add("active");
+    if(m==="twoWeeks") modeTwoWeeks.classList.add("active");
+
+    // DOW row visible in month + twoWeeks
+    elDowRow.style.display = (m==="month" || m==="twoWeeks") ? "grid" : "none";
+
+    renderCalendar();
+  }
+
+  modeMonth.addEventListener("click", function(){ setMode("month"); });
+  modeWeek.addEventListener("click", function(){ setMode("week"); });
+  modeTwoWeeks.addEventListener("click", function(){ setMode("twoWeeks"); });
+
+  // navigation
+  prevNav.addEventListener("click", function(){
+    if(viewMode==="month"){
+      viewDate.setMonth(viewDate.getMonth()-1);
+    } else if(viewMode==="week"){
+      focusDate = addDays(focusDate, -7);
+    } else {
+      focusDate = addDays(focusDate, -14);
+    }
+    renderCalendar();
+  });
+  nextNav.addEventListener("click", function(){
+    if(viewMode==="month"){
+      viewDate.setMonth(viewDate.getMonth()+1);
+    } else if(viewMode==="week"){
+      focusDate = addDays(focusDate, 7);
+    } else {
+      focusDate = addDays(focusDate, 14);
+    }
+    renderCalendar();
+  });
+
+  // ====== Fill 2 weeks + clear month ======
   document.getElementById("btnQuick2w").addEventListener("click", function(){
     if(!isArmed("fill2w")){
       arm("fill2w", "Täytä 2 viikkoa: paina uudestaan vahvistaaksesi");
@@ -832,12 +1122,39 @@
     clearThisMonth();
   });
 
-  document.getElementById("btnExport").addEventListener("click", exportJSON);
-  document.getElementById("btnImport").addEventListener("click", importJSON);
+  // ====== Meal filters ======
+  elMealSearch.addEventListener("input", function(e){
+    mealQuery = (e.target.value || "").trim().toLowerCase();
+    mealLimit = PAGE_SIZE;
+    if(elMealListWrap) elMealListWrap.scrollTop = 0;
+    renderMeals();
+  });
 
-  document.getElementById("btnOpenShop").addEventListener("click", function(){
-    openShopModal();
-    buildShop();
+  btnFavOnly.addEventListener("click", function(){
+    favOnly = !favOnly;
+    btnFavOnly.classList.toggle("starOn", favOnly);
+    btnFavOnly.textContent = favOnly ? "⭐ Vain suosikit" : "⭐ Suosikit";
+    mealLimit = PAGE_SIZE;
+    renderMeals();
+  });
+
+  catFilter.addEventListener("change", function(e){
+    catOnly = e.target.value || "";
+    mealLimit = PAGE_SIZE;
+    renderMeals();
+  });
+
+  sortFav.addEventListener("click", function(){
+    sortMode = "fav";
+    sortFav.classList.add("active");
+    sortAZ.classList.remove("active");
+    renderMeals();
+  });
+  sortAZ.addEventListener("click", function(){
+    sortMode = "az";
+    sortAZ.classList.add("active");
+    sortFav.classList.remove("active");
+    renderMeals();
   });
 
   btnMealsMore.addEventListener("click", function(){
@@ -850,16 +1167,27 @@
     renderMeals();
   });
 
-  elMealSearch.addEventListener("input", function(e){
-    mealQuery = (e.target.value || "").trim().toLowerCase();
-    mealLimit = PAGE_SIZE;
-    if(elMealListWrap) elMealListWrap.scrollTop = 0;
-    renderMeals();
-  });
+  function rebuildCatFilter(){
+    catFilter.innerHTML = "";
+    var opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = "Kaikki kategoriat";
+    catFilter.appendChild(opt0);
+
+    for(var i=0;i<CAT.length;i++){
+      var opt = document.createElement("option");
+      opt.value = CAT[i].key;
+      opt.textContent = CAT[i].label;
+      catFilter.appendChild(opt);
+    }
+
+    catFilter.value = catOnly || "";
+  }
 
   // ====== Display helpers ======
   function getDisplayForPlanItem(item){
     var map = mealById();
+    var serv = (item && item.servings) ? item.servings : 1;
 
     if(item && item.mealId && map.has(item.mealId)){
       var m = map.get(item.mealId);
@@ -867,7 +1195,8 @@
         text: m.name,
         link: item.link || m.url || "",
         ingredients: Array.isArray(m.ingredients) ? m.ingredients : [],
-        badge: item.badge || ""
+        badge: item.badge || "",
+        servings: serv
       };
     }
 
@@ -877,7 +1206,8 @@
       text: customText,
       link: (item && item.link) ? item.link : "",
       ingredients: customIngs,
-      badge: (item && item.badge) ? item.badge : ""
+      badge: (item && item.badge) ? item.badge : "",
+      servings: serv
     };
   }
 
@@ -885,16 +1215,29 @@
     renderCalendar();
     renderMeals();
     rebuildMealSelect();
+    rebuildCatFilter();
   }
 
+  // ====== Calendar render ======
   function renderCalendar(){
     var today = new Date();
+
+    if(viewMode === "month"){
+      renderMonth(today);
+    } else if(viewMode === "week"){
+      renderWeek(today);
+    } else {
+      renderTwoWeeks(today);
+    }
+  }
+
+  function renderMonth(today){
     var y = viewDate.getFullYear();
     var m = viewDate.getMonth();
 
     var monthNames = ["tammikuu","helmikuu","maaliskuu","huhtikuu","toukokuu","kesäkuu","heinäkuu","elokuu","syyskuu","lokakuu","marraskuu","joulukuu"];
     elMonthTitle.textContent = monthNames[m] + " " + y;
-    elMonthMeta.textContent = "Klikkaa päivää → valitse ruoka";
+    elMonthMeta.textContent = "Kuukausinäkymä • klikkaa päivää → valitse ruoka";
 
     var first = new Date(y, m, 1);
     var last = new Date(y, m+1, 0);
@@ -904,6 +1247,7 @@
     var offset = (jsDow + 6) % 7;
     var totalCells = Math.ceil((offset + daysInMonth)/7)*7;
 
+    elCalendar.className = "calendar";
     elCalendar.innerHTML = "";
 
     for(var i=0;i<totalCells;i++){
@@ -912,47 +1256,116 @@
       var inThisMonth = (date.getMonth() === m);
       var key = ymd(date);
 
-      var cell = document.createElement("div");
-      cell.className = "day" + (inThisMonth ? "" : " otherMonth") + (sameDay(date, today) ? " today" : "");
-      cell.dataset.date = key;
-
-      var num = document.createElement("div");
-      num.className = "num";
-      num.textContent = date.getDate();
-      cell.appendChild(num);
-
-      var item = plan[key];
-      if(item){
-        var disp = getDisplayForPlanItem(item);
-
-        var meal = document.createElement("div");
-        meal.className = "meal";
-        meal.textContent = disp.text || "";
-        cell.appendChild(meal);
-
-        if(disp.badge){
-          var tag = document.createElement("div");
-          tag.className = "tag";
-          tag.textContent = disp.badge;
-          cell.appendChild(tag);
-        }
-      }
-
-      (function(k){
-        cell.addEventListener("click", function(){ openDayModal(k); });
-      })(key);
-
+      var cell = buildDayCell(date, key, inThisMonth, today);
       elCalendar.appendChild(cell);
     }
   }
 
+  function renderWeek(today){
+    var start = startOfWeekMon(focusDate);
+    var end = addDays(start, 6);
+    elMonthTitle.textContent = "Viikko " + ymd(start) + " – " + ymd(end);
+    elMonthMeta.textContent = "Viikkonäkymä • klikkaa päivää → valitse ruoka";
+
+    elCalendar.className = "weekGrid";
+    elCalendar.innerHTML = "";
+
+    for(var i=0;i<7;i++){
+      var date = addDays(start, i);
+      var key = ymd(date);
+      var cell = buildDayCell(date, key, true, today, true);
+      elCalendar.appendChild(cell);
+    }
+  }
+
+  function renderTwoWeeks(today){
+    var start = startOfWeekMon(focusDate);
+    var end = addDays(start, 13);
+    elMonthTitle.textContent = "2 viikkoa " + ymd(start) + " – " + ymd(end);
+    elMonthMeta.textContent = "2 viikon näkymä • klikkaa päivää → valitse ruoka";
+
+    elCalendar.className = "twoWeekGrid";
+    elCalendar.innerHTML = "";
+
+    for(var i=0;i<14;i++){
+      var date = addDays(start, i);
+      var key = ymd(date);
+      var cell = buildDayCell(date, key, true, today, true);
+      elCalendar.appendChild(cell);
+    }
+  }
+
+  function buildDayCell(date, key, inThisMonth, today, showWeekday){
+    var weekday = ["Su","Ma","Ti","Ke","To","Pe","La"][date.getDay()];
+    var cell = document.createElement("div");
+    cell.className = "day" + (inThisMonth ? "" : " otherMonth") + (sameDay(date, today) ? " today" : "");
+    cell.dataset.date = key;
+
+    var num = document.createElement("div");
+    num.className = "num";
+    num.textContent = (showWeekday ? (weekday+" ") : "") + date.getDate();
+    cell.appendChild(num);
+
+    var item = plan[key];
+    if(item){
+      item = normalizePlanItem(item);
+      var disp = getDisplayForPlanItem(item);
+
+      var meal = document.createElement("div");
+      meal.className = "meal";
+      meal.textContent = disp.text || "";
+      cell.appendChild(meal);
+
+      if(disp.badge){
+        var tag = document.createElement("div");
+        tag.className = "tag";
+        tag.textContent = disp.badge;
+        cell.appendChild(tag);
+      }
+
+      var s = disp.servings || 1;
+      if(s !== 1){
+        var serv = document.createElement("div");
+        serv.className = "serv";
+        serv.textContent = "x"+s;
+        cell.appendChild(serv);
+      }
+    }
+
+    (function(k, d){
+      cell.addEventListener("click", function(){
+        focusDate = d; // keep focus on clicked day
+        openDayModal(k);
+      });
+    })(key, new Date(date));
+
+    return cell;
+  }
+
+  // ====== Meals render ======
   function renderMeals(){
     elMealList.innerHTML = "";
 
     var filteredAll = meals.filter(function(m){
+      if(!m) return false;
+      if(favOnly && !m.favorite) return false;
+      if(catOnly){
+        var cats = Array.isArray(m.categories) ? m.categories : [];
+        if(cats.indexOf(catOnly) === -1) return false;
+      }
       if(!mealQuery) return true;
-      var hay = (m.name+" "+(m.notes||"")+" "+((m.ingredients||[]).join(" "))).toLowerCase();
+      var hay = (m.name+" "+(m.notes||"")+" "+((m.ingredients||[]).join(" "))+" "+((m.categories||[]).join(" "))).toLowerCase();
       return hay.indexOf(mealQuery) !== -1;
+    });
+
+    // sort
+    filteredAll.sort(function(a,b){
+      if(sortMode === "fav"){
+        var af = a.favorite ? 1 : 0;
+        var bf = b.favorite ? 1 : 0;
+        if(af !== bf) return bf - af;
+      }
+      return String(a.name||"").localeCompare(String(b.name||""), "fi");
     });
 
     var total = filteredAll.length;
@@ -961,7 +1374,7 @@
     if(total === 0){
       var p = document.createElement("div");
       p.className = "muted";
-      p.textContent = "Ei tuloksia haulla.";
+      p.textContent = "Ei tuloksia suodattimilla.";
       elMealList.appendChild(p);
       mealPagerInfo.textContent = "0 / 0";
       btnMealsMore.style.display = "none";
@@ -1001,29 +1414,61 @@
         left.appendChild(notes);
       }
 
-      if(Array.isArray(meal.ingredients) && meal.ingredients.length){
-        var chips = document.createElement("div");
-        chips.className = "chips";
-        meal.ingredients.slice(0,6).forEach(function(x){
-          var c = document.createElement("span");
-          c.className = "chip";
-          c.textContent = x;
-          chips.appendChild(c);
-        });
-        if(meal.ingredients.length > 6){
-          var more = document.createElement("span");
-          more.className = "chip";
-          more.textContent = "+"+(meal.ingredients.length - 6);
-          chips.appendChild(more);
-        }
-        left.appendChild(chips);
+      var chips = document.createElement("div");
+      chips.className = "chips";
+
+      if(meal.favorite){
+        var favChip = document.createElement("span");
+        favChip.className = "chip fav";
+        favChip.textContent = "⭐ Suosikki";
+        chips.appendChild(favChip);
       }
 
+      var cats = Array.isArray(meal.categories) ? meal.categories : [];
+      cats.slice(0,4).forEach(function(c){
+        var cc = document.createElement("span");
+        cc.className = "chip cat";
+        cc.textContent = catLabel(c);
+        chips.appendChild(cc);
+      });
+      if(cats.length > 4){
+        var moreCats = document.createElement("span");
+        moreCats.className = "chip";
+        moreCats.textContent = "+"+(cats.length-4);
+        chips.appendChild(moreCats);
+      }
+
+      var ings = Array.isArray(meal.ingredients) ? meal.ingredients : [];
+      if(ings.length){
+        var ingChip = document.createElement("span");
+        ingChip.className = "chip";
+        ingChip.textContent = ings[0] + (ings.length>1 ? " +" + (ings.length-1) : "");
+        chips.appendChild(ingChip);
+      }
+
+      if(chips.childNodes.length) left.appendChild(chips);
+
       var right = document.createElement("div");
+      right.className = "row";
+
+      var starBtn = document.createElement("button");
+      starBtn.className = "btn icon" + (meal.favorite ? " starOn" : "");
+      starBtn.textContent = meal.favorite ? "⭐" : "☆";
+      starBtn.title = meal.favorite ? "Poista suosikeista" : "Lisää suosikkeihin";
+      starBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        toggleFavorite(meal.id);
+      });
+
       var editBtn = document.createElement("button");
       editBtn.className = "btn";
       editBtn.textContent = "Muokkaa";
-      editBtn.addEventListener("click", function(){ openMealModal(meal.id); });
+      editBtn.addEventListener("click", function(e){
+        e.stopPropagation();
+        openMealModal(meal.id);
+      });
+
+      right.appendChild(starBtn);
       right.appendChild(editBtn);
 
       top.appendChild(left);
@@ -1039,6 +1484,16 @@
     btnMealsLess.style.display = (mealLimit > PAGE_SIZE && total > PAGE_SIZE) ? "inline-flex" : "none";
   }
 
+  function toggleFavorite(id){
+    var idx = meals.findIndex(function(x){ return x.id === id; });
+    if(idx < 0) return;
+    meals[idx].favorite = !meals[idx].favorite;
+    saveMeals(meals);
+    renderMeals();
+    rebuildMealSelect();
+  }
+
+  // ====== Meal select for day modal ======
   function rebuildMealSelect(){
     mealSelect.innerHTML = "";
 
@@ -1047,10 +1502,18 @@
     opt0.textContent = "— valitse —";
     mealSelect.appendChild(opt0);
 
-    meals.forEach(function(m){
+    // show favorites first + A-Ö
+    var sorted = meals.slice().sort(function(a,b){
+      var af = a.favorite ? 1 : 0;
+      var bf = b.favorite ? 1 : 0;
+      if(af !== bf) return bf-af;
+      return String(a.name||"").localeCompare(String(b.name||""), "fi");
+    });
+
+    sorted.forEach(function(m){
       var opt = document.createElement("option");
       opt.value = m.id;
-      opt.textContent = m.name;
+      opt.textContent = (m.favorite ? "⭐ " : "") + m.name;
       mealSelect.appendChild(opt);
     });
 
@@ -1100,6 +1563,7 @@
 
     var existing = plan[key];
     if(existing){
+      existing = normalizePlanItem(existing);
       var disp = getDisplayForPlanItem(existing);
       dayModalSubtitle.textContent = disp.text ? ("Nykyinen: " + disp.text) : "Ei vielä merkintää";
     } else {
@@ -1119,6 +1583,7 @@
       customIngredients.value = "";
     }
 
+    servings.value = existing && existing.servings ? String(existing.servings) : "1";
     badge.value = (existing && existing.badge) ? existing.badge : "";
     recipeLink.value = (existing && existing.link) ? existing.link : "";
 
@@ -1153,9 +1618,11 @@
     var sel = mealSelect.value;
     var badgeVal = (badge.value || "").trim();
     var linkVal = (recipeLink.value || "").trim();
+    var servVal = Number(servings.value || 1) || 1;
+    if(servVal !== 1 && servVal !== 2 && servVal !== 4) servVal = 1;
 
     if(sel && sel !== "__custom__" && map.has(sel)){
-      plan[activeDayKey] = { mealId: sel, badge: badgeVal, link: linkVal };
+      plan[activeDayKey] = { mealId: sel, badge: badgeVal, link: linkVal, servings: servVal };
       savePlan(plan);
       renderCalendar();
       toast("Tallennettu ✅", "success");
@@ -1170,7 +1637,7 @@
       var ingStr = (customIngredients.value || "").trim();
       var ingArr = ingStr ? ingStr.split(",").map(function(x){ return x.trim(); }).filter(Boolean) : [];
 
-      plan[activeDayKey] = { customText: text, customIngredients: ingArr, badge: badgeVal, link: linkVal };
+      plan[activeDayKey] = { customText: text, customIngredients: ingArr, badge: badgeVal, link: linkVal, servings: servVal };
       savePlan(plan);
       renderCalendar();
       toast("Tallennettu ✅", "success");
@@ -1208,6 +1675,32 @@
   // ====== Meal modal ======
   var activeMealId = null;
 
+  function buildCatCheckboxes(selected){
+    catChecks.innerHTML = "";
+    selected = selected || [];
+    for(var i=0;i<CAT.length;i++){
+      (function(cat){
+        var lab = document.createElement("label");
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.value = cat.key;
+        cb.checked = selected.indexOf(cat.key) !== -1;
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(" " + cat.label));
+        catChecks.appendChild(lab);
+      })(CAT[i]);
+    }
+  }
+
+  function getSelectedCats(){
+    var out = [];
+    var inputs = catChecks.querySelectorAll("input[type=checkbox]");
+    for(var i=0;i<inputs.length;i++){
+      if(inputs[i].checked) out.push(inputs[i].value);
+    }
+    return out;
+  }
+
   function openMealModal(id){
     activeMealId = id;
     var isEdit = !!id;
@@ -1220,11 +1713,15 @@
       mealUrl.value = (m && m.url) ? m.url : "";
       mealNotes.value = (m && m.notes) ? m.notes : "";
       mealIngs.value = (m && Array.isArray(m.ingredients)) ? m.ingredients.join(", ") : "";
+      mealFav.checked = !!(m && m.favorite);
+      buildCatCheckboxes((m && Array.isArray(m.categories)) ? m.categories : []);
     } else {
       mealName.value = "";
       mealUrl.value = "";
       mealNotes.value = "";
       mealIngs.value = "";
+      mealFav.checked = false;
+      buildCatCheckboxes([]);
     }
 
     disarm("deleteMeal");
@@ -1251,14 +1748,16 @@
     var ingArr = (mealIngs.value || "").trim()
       ? mealIngs.value.split(",").map(function(x){ return x.trim(); }).filter(Boolean)
       : [];
+    var fav = !!mealFav.checked;
+    var cats = getSelectedCats();
 
     if(activeMealId){
       var idx = meals.findIndex(function(x){ return x.id === activeMealId; });
       if(idx >= 0){
-        meals[idx] = { id: meals[idx].id, name: name, url: url, notes: notes, ingredients: ingArr };
+        meals[idx] = normalizeMeal({ id: meals[idx].id, name: name, url: url, notes: notes, ingredients: ingArr, favorite: fav, categories: cats });
       }
     } else {
-      meals.unshift({ id: uuid(), name: name, url: url, notes: notes, ingredients: ingArr });
+      meals.unshift(normalizeMeal({ id: uuid(), name: name, url: url, notes: notes, ingredients: ingArr, favorite: fav, categories: cats }));
     }
 
     saveMeals(meals);
@@ -1281,12 +1780,12 @@
 
     meals = meals.filter(function(m){ return m.id !== activeMealId; });
 
-    // Replace references in plan
+    // Replace references in plan (convert to custom text)
     Object.keys(plan).forEach(function(k){
       if(plan[k] && plan[k].mealId === activeMealId){
         var old = plan[k];
         var disp = getDisplayForPlanItem(old);
-        plan[k] = { customText: disp.text || "Poistettu ruoka", customIngredients: disp.ingredients || [], badge: disp.badge || "", link: disp.link || "" };
+        plan[k] = { customText: disp.text || "Poistettu ruoka", customIngredients: disp.ingredients || [], badge: disp.badge || "", link: disp.link || "", servings: disp.servings || 1 };
       }
     });
 
@@ -1299,23 +1798,18 @@
 
   // ====== Quick fill 2 weeks ======
   function quickFill2Weeks(){
-    var base = new Date();
-    var dow = base.getDay();
-    var toMon = (dow === 0) ? 1 : (1 - dow);
-    var start = addDays(base, toMon);
-
+    var start = startOfWeekMon(new Date());
     var ids = meals.map(function(m){ return m.id; });
     if(ids.length < 7){
       toast("Liian vähän ruokia listassa.", "warn");
       return;
     }
-
+    // fill 14 days from Monday
     for(var i=0;i<14;i++){
       var d = addDays(start, i);
       var key = ymd(d);
-      plan[key] = { mealId: ids[i % ids.length], badge:"", link:"" };
+      plan[key] = { mealId: ids[i % ids.length], badge:"", link:"", servings: 1 };
     }
-
     savePlan(plan);
     renderCalendar();
     toast("Täytetty 2 viikkoa ✅", "success");
@@ -1341,6 +1835,37 @@
     savePlan(plan);
     renderCalendar();
     toast("Kuukausi tyhjennetty.", "success");
+  }
+
+  // ====== Shopping list grouping ======
+  function normIng(s){
+    return String(s||"").trim().toLowerCase();
+  }
+
+  function groupForIngredient(ing){
+    var t = normIng(ing);
+
+    var veg = ["peruna","porkkana","sipuli","valkosipuli","tomaatti","kurkku","paprika","salaatti","sitruuna","lime","avokado","bataatti","kesäkurp","sieni","persil","tilli","ruohosipuli","inkiv","chili","kaali","omena","banaani"];
+    var prot = ["broileri","kana","jauheliha","lohi","tonnik","kala","tofu","kikher","pavut","linss","nyht","härk","halloumi","kananmuna","nakit","makkara"];
+    var dairy = ["maito","kerma","voi","juusto","feta","parmesa","kermaviili","jogur"];
+    var dry = ["pasta","riisi","couscous","lasagne","tortilla","leipä","liemi","tomaattimurska","säilyke","nuudeli","jauho","kaur"];
+    var sauce = ["soija","pesto","curry","garam","suola","pippuri","öljy","sinappi","salsa","mauste"];
+    var frozen = ["pakaste","kalapuikko","wok-vihannekset"];
+
+    function hasAny(arr){
+      for(var i=0;i<arr.length;i++){
+        if(t.indexOf(arr[i]) !== -1) return true;
+      }
+      return false;
+    }
+
+    if(hasAny(veg)) return "Vihannekset & hedelmät";
+    if(hasAny(prot)) return "Proteiinit (liha/kala/kasvis)";
+    if(hasAny(dairy)) return "Maitotuotteet & juustot";
+    if(hasAny(frozen)) return "Pakasteet";
+    if(hasAny(dry)) return "Kuivatuotteet";
+    if(hasAny(sauce)) return "Mausteet & kastikkeet";
+    return "Muut";
   }
 
   // ====== Shopping list ======
@@ -1375,35 +1900,56 @@
     var endKey = shopEnd.value || startKey;
 
     var keys = listKeysBetween(startKey, endKey);
-    var counts = new Map();
+    var counts = new Map();      // ingKey -> count (annoskertoimet mukaan)
+    var labels = new Map();      // ingKey -> original label (first seen)
     var usedMeals = [];
-
     var plannedDays = 0;
 
     keys.forEach(function(k){
       var item = plan[k];
       if(!item) return;
+      item = normalizePlanItem(item);
 
       var disp = getDisplayForPlanItem(item);
       if(disp.text) plannedDays++;
 
+      var mult = disp.servings || 1;
+
       (disp.ingredients || []).forEach(function(ing){
-        var keyIng = String(ing).trim().toLowerCase();
+        var keyIng = normIng(ing);
         if(!keyIng) return;
-        counts.set(keyIng, (counts.get(keyIng) || 0) + 1);
+        if(!labels.has(keyIng)) labels.set(keyIng, String(ing).trim());
+        counts.set(keyIng, (counts.get(keyIng) || 0) + mult);
       });
 
       if(disp.link) usedMeals.push({ date:k, text: disp.text, link: disp.link });
     });
 
-    var sorted = Array.from(counts.entries()).sort(function(a,b){
-      return a[0].localeCompare(b[0], "fi");
+    // group them
+    var groups = new Map(); // groupName -> array of {key,label,count}
+    counts.forEach(function(cnt, keyIng){
+      var label = labels.get(keyIng) || keyIng;
+      var g = groupForIngredient(label);
+      if(!groups.has(g)) groups.set(g, []);
+      groups.get(g).push({ key:keyIng, label: label, count: cnt });
     });
 
-    shopList.innerHTML = "";
-    shopMeta.textContent = startKey + " → " + endKey + " • " + plannedDays + " päivää ruokia • " + sorted.length + " ainesosaa";
+    // order groups
+    var groupOrder = [
+      "Vihannekset & hedelmät",
+      "Proteiinit (liha/kala/kasvis)",
+      "Maitotuotteet & juustot",
+      "Pakasteet",
+      "Kuivatuotteet",
+      "Mausteet & kastikkeet",
+      "Muut"
+    ];
 
-    if(sorted.length === 0){
+    shopList.innerHTML = "";
+    var totalIngs = counts.size;
+    shopMeta.textContent = startKey + " → " + endKey + " • " + plannedDays + " päivää ruokia • " + totalIngs + " ainesosaa";
+
+    if(totalIngs === 0){
       var empty = document.createElement("div");
       empty.className = "muted";
       empty.textContent = "Ei ainesosia. Lisää ruokia kalenteriin valitulle ajalle.";
@@ -1412,39 +1958,77 @@
       return;
     }
 
-    sorted.forEach(function(pair){
-      var ing = pair[0], cnt = pair[1];
+    groupOrder.forEach(function(gname){
+      if(!groups.has(gname)) return;
+      var arr = groups.get(gname);
+      arr.sort(function(a,b){ return String(a.label).localeCompare(String(b.label), "fi"); });
 
-      var row = document.createElement("div");
-      row.className = "shopRow";
+      var box = document.createElement("div");
+      box.className = "groupBox";
+
+      var head = document.createElement("div");
+      head.className = "groupHead";
 
       var left = document.createElement("div");
-      left.className = "shopLeft";
-
-      var cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.className = "check";
-      cb.checked = !!checks[ing];
-      cb.addEventListener("change", function(){
-        checks[ing] = cb.checked;
-        saveChecks(checks);
-      });
-
-      var label = document.createElement("div");
-      label.innerHTML = "<div style='font-weight:650; text-transform:capitalize;'>"+escapeHtml(ing)+"</div><div class='small'>Tarvitaan "+cnt+" ruuassa</div>";
-
-      left.appendChild(cb);
-      left.appendChild(label);
+      left.innerHTML = "<div class='gtitle'>"+escapeHtml(gname)+"</div><div class='gmeta'>"+arr.length+" tuotetta</div>";
 
       var right = document.createElement("div");
       right.className = "kbd";
-      right.textContent = "× " + cnt;
+      right.textContent = "avaa/sulje";
 
-      row.appendChild(left);
-      row.appendChild(right);
-      shopList.appendChild(row);
+      head.appendChild(left);
+      head.appendChild(right);
+
+      var body = document.createElement("div");
+      body.className = "groupBody";
+
+      arr.forEach(function(it){
+        var row = document.createElement("div");
+        row.className = "shopRow";
+
+        var l = document.createElement("div");
+        l.className = "shopLeft";
+
+        var cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.className = "check";
+        cb.checked = !!checks[it.key];
+        cb.addEventListener("change", function(){
+          checks[it.key] = cb.checked;
+          saveChecks(checks);
+        });
+
+        var lab = document.createElement("div");
+        var nice = String(it.label);
+        lab.innerHTML =
+          "<div style='font-weight:650;'>"+escapeHtml(nice)+"</div>"+
+          "<div class='small'>Tarvitaan x"+it.count+"</div>";
+
+        l.appendChild(cb);
+        l.appendChild(lab);
+
+        var r = document.createElement("div");
+        r.className = "kbd";
+        r.textContent = "x" + it.count;
+
+        row.appendChild(l);
+        row.appendChild(r);
+        body.appendChild(row);
+      });
+
+      // collapsible
+      var open = true;
+      head.addEventListener("click", function(){
+        open = !open;
+        body.style.display = open ? "flex" : "none";
+      });
+
+      box.appendChild(head);
+      box.appendChild(body);
+      shopList.appendChild(box);
     });
 
+    // recipe links (unique)
     if(usedMeals.length){
       var uniq = new Map();
       usedMeals.forEach(function(x){
@@ -1452,14 +2036,15 @@
         if(!uniq.has(k)) uniq.set(k, x);
       });
 
-      var arr = Array.from(uniq.values()).slice(0, 10);
-      var more = uniq.size - arr.length;
+      var arr2 = Array.from(uniq.values()).slice(0, 12);
+      var more = uniq.size - arr2.length;
 
-      var parts = arr.map(function(x){
+      var parts = arr2.map(function(x){
         return "• " + x.date + ": <a href='"+x.link+"' target='_blank' rel='noopener'>" + escapeHtml(x.text) + "</a>";
       });
 
-      shopLinks.innerHTML = "<div><b>Reseptilinkit (valitut ruuat)</b></div><div style='margin-top:6px'>" +
+      shopLinks.innerHTML =
+        "<div><b>Reseptilinkit (valitut ruuat)</b></div><div style='margin-top:6px'>" +
         parts.join("<br>") + (more>0 ? "<br><span class='small muted'>+"+more+" lisää…</span>" : "") + "</div>";
     } else {
       shopLinks.textContent = "";
@@ -1475,26 +2060,56 @@
     var startKey = shopStart.value || ymd(new Date());
     var endKey = shopEnd.value || startKey;
     var keys = listKeysBetween(startKey, endKey);
+
     var counts = new Map();
+    var labels = new Map();
 
     keys.forEach(function(k){
       var item = plan[k];
       if(!item) return;
+      item = normalizePlanItem(item);
       var disp = getDisplayForPlanItem(item);
+      var mult = disp.servings || 1;
       (disp.ingredients || []).forEach(function(ing){
-        var keyIng = String(ing).trim().toLowerCase();
+        var keyIng = normIng(ing);
         if(!keyIng) return;
-        counts.set(keyIng, (counts.get(keyIng) || 0) + 1);
+        if(!labels.has(keyIng)) labels.set(keyIng, String(ing).trim());
+        counts.set(keyIng, (counts.get(keyIng) || 0) + mult);
       });
     });
 
-    var lines = Array.from(counts.entries()).sort(function(a,b){
-      return a[0].localeCompare(b[0], "fi");
-    }).map(function(pair){
-      return "- " + pair[0] + " (x" + pair[1] + ")";
+    // group text
+    var grouped = {};
+    counts.forEach(function(cnt, keyIng){
+      var label = labels.get(keyIng) || keyIng;
+      var g = groupForIngredient(label);
+      if(!grouped[g]) grouped[g] = [];
+      grouped[g].push({ label: label, count: cnt });
     });
 
-    var text = "Ostoslista (" + startKey + " → " + endKey + ")\n" + lines.join("\n");
+    var order = [
+      "Vihannekset & hedelmät",
+      "Proteiinit (liha/kala/kasvis)",
+      "Maitotuotteet & juustot",
+      "Pakasteet",
+      "Kuivatuotteet",
+      "Mausteet & kastikkeet",
+      "Muut"
+    ];
+
+    var out = [];
+    out.push("Ostoslista (" + startKey + " → " + endKey + ")");
+    order.forEach(function(g){
+      if(!grouped[g]) return;
+      grouped[g].sort(function(a,b){ return String(a.label).localeCompare(String(b.label), "fi"); });
+      out.push("");
+      out.push("[" + g + "]");
+      grouped[g].forEach(function(it){
+        out.push("- " + it.label + " (x" + it.count + ")");
+      });
+    });
+
+    var text = out.join("\n");
 
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(function(){
@@ -1523,7 +2138,7 @@
 
   // ====== Export / Import ======
   function exportJSON(){
-    var data = { version: "mealcal.v3", exportedAt: new Date().toISOString(), meals: meals, plan: plan };
+    var data = { version: "mealcal.v4", exportedAt: new Date().toISOString(), meals: meals, plan: plan };
     var blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -1550,8 +2165,9 @@
           if(!data || typeof data !== "object") throw new Error("bad");
           if(!Array.isArray(data.meals) || typeof data.plan !== "object") throw new Error("format");
 
-          meals = data.meals;
+          meals = data.meals.map(normalizeMeal);
           plan = data.plan;
+          Object.keys(plan).forEach(function(k){ plan[k] = normalizePlanItem(plan[k]); });
 
           saveMeals(meals);
           savePlan(plan);
@@ -1571,6 +2187,7 @@
 
   // ====== Init ======
   rebuildMealSelect();
+  rebuildCatFilter();
   renderAll();
 
   // ====== Service Worker ======
