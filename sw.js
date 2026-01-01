@@ -1,18 +1,61 @@
-const CACHE = "mealcal-cache-v2";
-const ASSETS = ["./", "./index.html", "./manifest.json"];
+/* sw.js — simple + reliable update */
+const CACHE_VERSION = "mealcal-v3";
+const CORE_ASSETS = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
 
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_VERSION).then((cache) => cache.addAll(CORE_ASSETS)).catch(() => {})
   );
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => (k !== CACHE_VERSION ? caches.delete(k) : Promise.resolve())));
+    await self.clients.claim();
+  })());
 });
 
+// Network-first for navigation (index), cache-first for everything else
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
-  );
+  const req = event.request;
+  const url = new URL(req.url);
+
+  // Only handle same-origin
+  if (url.origin !== self.location.origin) return;
+
+  // Navigations: network first
+  if (req.mode === "navigate") {
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(req);
+        const cache = await caches.open(CACHE_VERSION);
+        cache.put("./index.html", fresh.clone());
+        return fresh;
+      } catch (e) {
+        const cache = await caches.open(CACHE_VERSION);
+        return (await cache.match("./index.html")) || (await cache.match("./")) || new Response("Offline", { status: 200 });
+      }
+    })());
+    return;
+  }
+
+  // Others: cache-first, then network
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_VERSION);
+    const cached = await cache.match(req);
+    if (cached) return cached;
+    try {
+      const fresh = await fetch(req);
+      cache.put(req, fresh.clone());
+      return fresh;
+    } catch (e) {
+      return cached || new Response("", { status: 200 });
+    }
+  })());
 });
