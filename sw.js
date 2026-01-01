@@ -1,5 +1,5 @@
-/* sw.js — v4 */
-const CACHE_VERSION = "mealcal-v4";
+/* sw.js — mealcal v5 */
+const CACHE_VERSION = "mealcal-v5";
 const CORE_ASSETS = [
   "./",
   "./index.html",
