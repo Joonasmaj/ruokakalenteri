@@ -1144,29 +1144,58 @@
 
   // --- Quick fill 2 weeks ---
   function quickFill2Weeks(){
-    const base = new Date();
-    const dow = base.getDay();
-    const toMon = (dow === 0) ? 1 : (1 - dow);
-    const start = addDays(base, toMon);
+    // ✅ Puhelinystävällinen: 2 painallusta vahvistaa (ei confirm-dialogia)
+let _quickFillArmedUntil = 0;
 
-    const ids = meals.map(m => m.id);
-    if(ids.length < 7){ alert("Liian vähän ruokia listassa."); return; }
+function quickFill2Weeks(){
+  const btn = document.getElementById("btnQuick2w");
+  const now = Date.now();
 
-    const picks = [];
-    for(let i=0;i<14;i++) picks.push(ids[i % ids.length]);
+  // 1) Ensimmäinen painallus = "aseistetaan"
+  if(now > _quickFillArmedUntil){
+    _quickFillArmedUntil = now + 4500;
 
-    const ok = confirm(`Täytetäänkö 2 viikkoa (14 päivää) alkaen ${ymd(start)}?`);
-    if(!ok) return;
-
-    for(let i=0;i<14;i++){
-      const d = addDays(start, i);
-      const key = ymd(d);
-      plan[key] = { mealId: picks[i], badge:"", link:"" };
+    if(btn){
+      btn.dataset.origText = btn.dataset.origText || btn.textContent;
+      btn.textContent = "Vahvista täyttö (paina uudestaan)";
     }
 
-    savePlan(plan);
-    renderCalendar();
+    // Palauta teksti jos ei vahvisteta
+    setTimeout(() => {
+      if(Date.now() > _quickFillArmedUntil){
+        _quickFillArmedUntil = 0;
+        if(btn && btn.dataset.origText) btn.textContent = btn.dataset.origText;
+      }
+    }, 4600);
+
+    return;
   }
+
+  // 2) Toinen painallus = suoritetaan täyttö
+  _quickFillArmedUntil = 0;
+  if(btn && btn.dataset.origText) btn.textContent = btn.dataset.origText;
+
+  const base = new Date();
+  const dow = base.getDay();
+  const toMon = (dow === 0) ? 1 : (1 - dow); // maanantai (tai seuraava maanantai jos sunnuntai)
+  const start = addDays(base, toMon);
+
+  const ids = meals.map(m => m.id);
+  if(ids.length < 7){
+    // Ei alertia (voi olla blokattu PWA:ssa), vaan vain palautus
+    return;
+  }
+
+  for(let i=0;i<14;i++){
+    const d = addDays(start, i);
+    const key = ymd(d);
+    plan[key] = { mealId: ids[i % ids.length], badge:"", link:"" };
+  }
+
+  savePlan(plan);
+  renderCalendar();
+}
+
 
   function clearThisMonth(){
     const y = viewDate.getFullYear();
